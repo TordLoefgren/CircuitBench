@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CircuitBench</title>
+  </head>
+  <body>
+    <div id="app-shell">
+      <header class="app-header">
+        <h1 class="app-header__title">CircuitBench</h1>
+        <p class="app-header__subtitle">
+          For now I am just an app that increment a counter. Later, who knows...
+        </p>
+      </header>
+
+      <main class="app-main">
+        <section class="counter-section">
+          <output class="counter-section__output" id="counter-section__output"
+            >0</output
+          >
+
+          <input
+            class="counter-section__increment-button"
+            id="counter-section__increment-button"
+            type="button"
+            value="Increment"
+          />
+
+          <input
+            class="counter-section__reset-button"
+            id="counter-section__reset-button"
+            type="button"
+            value="Reset"
+          />
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
