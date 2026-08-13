@@ -1,4 +1,23 @@
-GET {{CircuitBench_HostAddress}}
-Accept: application/json
+@CircuitBench_HostAddress = http://localhost:5110
+
+POST {{CircuitBench_HostAddress}}/api/circuit/simulate
+Content-Type: application/json
+
+{
+  "powerSource": {
+    "voltage": 9.0
+  },
+  "components": [
+    {
+      "kind": "led",
+      "forwardVoltage": 1.8,
+      "maxCurrent": 0.02
+    },
+    {
+      "kind": "resistor",
+      "resistance": 330.0
+    }
+  ]
+}
 
 ###

@@ -1,27 +1,44 @@
-var builder = WebApplication.CreateBuilder(args);
+using CircuitBench.Services;
 
-// Add services to the container.
-builder.Services.AddControllers();
-
-var frontendOrigin =
-    builder.Configuration["Cors:FrontendOrigin"]
-    ?? throw new InvalidOperationException("Cors:FrontendOrigin is not configured.");
-
-builder.Services.AddCors(options =>
+namespace CircuitBench
 {
-    options.AddPolicy("Frontend", policy =>
+    public class Program
     {
-        policy.WithOrigins(frontendOrigin);
-    });
-});
+        private const string FrontendCorsPolicyName = "Frontend";
+        private const string FrontendOriginConfigurationKey = "Cors:FrontendOrigin";
 
-var app = builder.Build();
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-// Configure the HTTP request pipeline.
-app.UseHttpsRedirection();
-app.UseCors("Frontend");
-app.UseAuthorization();
+            builder.Services.AddControllers();
 
-app.MapControllers();
+            builder.Services.AddScoped<ICircuitSimulationService, CircuitSimulationService>();
 
-app.Run();
+            var frontendOrigin =
+                builder.Configuration[FrontendOriginConfigurationKey]
+                ?? throw new InvalidOperationException($"{FrontendOriginConfigurationKey} is not configured.");
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    FrontendCorsPolicyName,
+                    policy =>
+                    {
+                        policy.WithOrigins(frontendOrigin).AllowAnyHeader().AllowAnyMethod();
+                    }
+                );
+            });
+
+            var app = builder.Build();
+
+            app.UseHttpsRedirection();
+            app.UseCors(FrontendCorsPolicyName);
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
+        }
+    }
+}

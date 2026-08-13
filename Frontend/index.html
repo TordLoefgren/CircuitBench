@@ -10,29 +10,23 @@
       <header class="app-header">
         <h1 class="app-header__title">CircuitBench</h1>
         <p class="app-header__subtitle">
-          For now I am just an app that increment a counter. Later, who knows...
+          This is where the circuit simulation happens!
         </p>
       </header>
 
       <main class="app-main">
-        <section class="counter-section">
-          <output class="counter-section__output" id="counter-section__output"
-            >0</output
-          >
-
+        <section class="circuit-simulation">
           <input
-            class="counter-section__increment-button"
-            id="counter-section__increment-button"
+            class="circuit-simulation__button"
+            id="circuit-simulation__button"
             type="button"
-            value="Increment"
+            value="Simulate"
           />
 
-          <input
-            class="counter-section__reset-button"
-            id="counter-section__reset-button"
-            type="button"
-            value="Reset"
-          />
+          <output
+            class="circuit-simulation__output"
+            id="circuit-simulation__output"
+          ></output>
         </section>
       </main>
     </div>

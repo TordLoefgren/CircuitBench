@@ -55,20 +55,17 @@ body {
   text-align: center;
 }
 
-.counter-section {
+.circuit-simulation {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.counter-section__output {
-  text-align: center;
-  border: 1px solid black;
-}
-
-.counter-section__output,
-.counter-section__increment-button,
-.counter-section__reset-button {
+.circuit-simulation__button {
   width: 200px;
   margin: 20px;
+}
+
+.circuit-simulation__output {
+  text-align: center;
 }
