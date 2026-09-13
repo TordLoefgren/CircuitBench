@@ -5,30 +5,185 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CircuitBench</title>
   </head>
+
   <body>
-    <div id="app-shell">
-      <header class="app-header">
-        <h1 class="app-header__title">CircuitBench</h1>
-        <p class="app-header__subtitle">
-          This is where the circuit simulation happens!
-        </p>
+    <div class="app-shell">
+      <header class="app-shell__header app-header">
+        <hgroup class="app-header__heading">
+          <h1 class="app-header__title">Circuit Bench</h1>
+          <p class="app-header__subtitle">
+            Build and simulate simple circuits.
+          </p>
+        </hgroup>
       </header>
 
-      <main class="app-main">
-        <section class="circuit-simulation">
-          <input
-            class="circuit-simulation__button"
-            id="circuit-simulation__button"
-            type="button"
-            value="Simulate"
-          />
+      <main class="app-shell__main">
+        <div class="workspace">
+          <aside class="panel inspector">
+            <h2 class="panel__title inspector__title">Inspector</h2>
 
-          <output
-            class="circuit-simulation__output"
-            id="circuit-simulation__output"
-          ></output>
-        </section>
+            <section
+              class="inspector__section"
+              aria-labelledby="circuit-information-title"
+            >
+              <h3
+                id="circuit-information-title"
+                class="inspector__section-title"
+              >
+                Circuit information
+              </h3>
+
+              <dl class="inspector__values">
+                <dt>Source voltage</dt>
+                <dd>9 V</dd>
+                <dt>Components</dt>
+                <dd>5</dd>
+              </dl>
+
+              <ol class="inspector__components">
+                <li>LED (1.8 V, max. 20 mA)</li>
+                <li>Resistor (180 Ω)</li>
+                <li>LED (2.2 V, max. 20 mA)</li>
+                <li>Resistor (330 Ω)</li>
+                <li>Resistor (220 Ω)</li>
+              </ol>
+            </section>
+
+            <section
+              class="inspector__section"
+              aria-labelledby="simulation-result-title"
+            >
+              <h3 id="simulation-result-title" class="inspector__section-title">
+                Simulation result
+              </h3>
+
+              <p id="simulation-status" class="inspector__status" role="status">
+                Click Simulate to see the results.
+              </p>
+
+              <div id="simulation-result" hidden>
+                <dl class="inspector__values">
+                  <dt>Total resistance</dt>
+                  <dd><span id="result-resistance">—</span> Ω</dd>
+                  <dt>Voltage</dt>
+                  <dd><span id="result-voltage">—</span> V</dd>
+                  <dt>Current</dt>
+                  <dd><span id="result-current">—</span> mA</dd>
+                  <dt>Power</dt>
+                  <dd><span id="result-power">—</span> mW</dd>
+                </dl>
+
+                <details class="inspector__component">
+                  <summary>1. LED (1.8 V)</summary>
+                  <dl class="inspector__values">
+                    <dt>Voltage drop</dt>
+                    <dd><span id="result-1-voltage">—</span> V</dd>
+                    <dt>Current</dt>
+                    <dd><span id="result-1-current">—</span> mA</dd>
+                    <dt>Power</dt>
+                    <dd><span id="result-1-power">—</span> mW</dd>
+                  </dl>
+                </details>
+
+                <details class="inspector__component">
+                  <summary>2. Resistor (180 Ω)</summary>
+                  <dl class="inspector__values">
+                    <dt>Voltage drop</dt>
+                    <dd><span id="result-2-voltage">—</span> V</dd>
+                    <dt>Current</dt>
+                    <dd><span id="result-2-current">—</span> mA</dd>
+                    <dt>Power</dt>
+                    <dd><span id="result-2-power">—</span> mW</dd>
+                  </dl>
+                </details>
+
+                <details class="inspector__component">
+                  <summary>3. LED (2.2 V)</summary>
+                  <dl class="inspector__values">
+                    <dt>Voltage drop</dt>
+                    <dd><span id="result-3-voltage">—</span> V</dd>
+                    <dt>Current</dt>
+                    <dd><span id="result-3-current">—</span> mA</dd>
+                    <dt>Power</dt>
+                    <dd><span id="result-3-power">—</span> mW</dd>
+                  </dl>
+                </details>
+
+                <details class="inspector__component">
+                  <summary>4. Resistor (330 Ω)</summary>
+                  <dl class="inspector__values">
+                    <dt>Voltage drop</dt>
+                    <dd><span id="result-4-voltage">—</span> V</dd>
+                    <dt>Current</dt>
+                    <dd><span id="result-4-current">—</span> mA</dd>
+                    <dt>Power</dt>
+                    <dd><span id="result-4-power">—</span> mW</dd>
+                  </dl>
+                </details>
+
+                <details class="inspector__component">
+                  <summary>5. Resistor (220 Ω)</summary>
+                  <dl class="inspector__values">
+                    <dt>Voltage drop</dt>
+                    <dd><span id="result-5-voltage">—</span> V</dd>
+                    <dt>Current</dt>
+                    <dd><span id="result-5-current">—</span> mA</dd>
+                    <dt>Power</dt>
+                    <dd><span id="result-5-power">—</span> mW</dd>
+                  </dl>
+                </details>
+              </div>
+            </section>
+          </aside>
+
+          <section class="panel bench">
+            <header class="bench__header">
+              <h2 class="panel__title bench__title">Circuit</h2>
+
+              <button class="button" id="simulate-button" type="button">
+                Simulate
+              </button>
+            </header>
+
+            <div class="bench__area">
+              <div class="bench__circuit-row">
+                <div class="terminal terminal--source">9 V</div>
+
+                <div class="circuit-component">
+                  <strong>LED</strong>
+                  <span>1.8 V</span>
+                  <small>Max. 20 mA</small>
+                </div>
+
+                <div class="circuit-component">
+                  <strong>Resistor</strong>
+                  <span>180 Ω</span>
+                </div>
+
+                <div class="circuit-component">
+                  <strong>LED</strong>
+                  <span>2.2 V</span>
+                  <small>Max. 20 mA</small>
+                </div>
+
+                <div class="circuit-component">
+                  <strong>Resistor</strong>
+                  <span>330 Ω</span>
+                </div>
+
+                <div class="circuit-component">
+                  <strong>Resistor</strong>
+                  <span>220 Ω</span>
+                </div>
+
+                <div class="terminal terminal--ground">GND</div>
+              </div>
+            </div>
+          </section>
+        </div>
       </main>
+
+      <footer class="app-shell__footer"></footer>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

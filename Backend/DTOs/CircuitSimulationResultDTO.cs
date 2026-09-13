@@ -5,6 +5,6 @@ namespace CircuitBench.DTOs
         double? Current,
         double Voltage,
         double? Power,
-        IReadOnlyList<ComponentSimulationResultDTO> Components
+        IReadOnlyCollection<ComponentSimulationResultDTO> Components
     );
 }

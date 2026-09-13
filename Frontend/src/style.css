@@ -1,71 +1,264 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import "@radix-ui/colors/sand.css";
+@import "@radix-ui/colors/cyan.css";
+@import "@radix-ui/colors/amber.css";
 
-  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
-  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-}
-
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
 }
 
-.app-header__title,
-.app-header__subtitle {
-  text-align: center;
+:root {
+  --page-padding: 40px;
+  --shell-width: 1200px;
+  --header-height: 96px;
+  --footer-height: 56px;
+
+  --workspace-padding: 20px;
+  --workspace-gap: 20px;
+  --inspector-width: 300px;
+  --bench-min-width: 500px;
+
+  --bench-padding: 30px;
+  --bench-gap: 16px;
+  --component-width: 100px;
+  --component-height: 120px;
+  --terminal-size: 60px;
+
+  font:
+    18px/1.45 system-ui,
+    sans-serif;
+  color: var(--sand-12);
 }
 
-.circuit-simulation {
+body {
+  min-height: 100dvh;
+  padding: var(--page-padding);
+
+  background-color: var(--sand-5);
+  background-image: radial-gradient(circle, var(--sand-8) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Page layout */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(var(--shell-width), 100%);
+  min-height: calc(100dvh - 2 * var(--page-padding));
+  margin-inline: auto;
+  padding: 8px;
+  background: var(--sand-5);
+  border: 1px solid var(--sand-8);
+  border-radius: 8px;
+}
+
+.app-shell__header {
+  display: flex;
+  align-items: center;
+  flex: 0 0 var(--header-height);
+  padding: 20px 30px;
+  background: var(--sand-2);
+}
+
+.app-header__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-shell__main {
+  display: flex;
+  flex: 1;
+  overflow-x: auto;
+  background: var(--sand-3);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: var(--inspector-width) minmax(0, 1fr);
+  gap: var(--workspace-gap);
+  width: 100%;
+
+  /* Scroll below the minimum usable workspace width. */
+  min-width: calc(
+    var(--inspector-width) + var(--bench-min-width) + var(--workspace-gap) + 2 *
+      var(--workspace-padding)
+  );
+
+  padding: var(--workspace-padding);
+}
+
+.app-shell__footer {
+  display: flex;
+  align-items: center;
+  flex: 0 0 var(--footer-height);
+  padding-inline: 30px;
+  background: var(--sand-2);
+}
+
+.panel {
+  padding: 20px;
+  background: var(--sand-1);
+  border: 1px solid var(--sand-7);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
+}
+
+.panel__title {
+  font-size: 1rem;
+}
+
+/* Inspector */
+
+.inspector__title {
+  margin-bottom: 20px;
+}
+
+.inspector__section {
+  padding-block: 20px;
+  border-top: 1px solid var(--sand-7);
+  font-size: 0.8rem;
+}
+
+.inspector__section-title {
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.inspector__values {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 8px;
+  margin-block: 8px;
+}
+
+.inspector__values dt,
+.inspector__status {
+  color: var(--sand-11);
+}
+
+.inspector__values dd {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.inspector__components {
+  padding-left: 20px;
+}
+
+.inspector__component {
+  padding-block: 6px;
+  border-top: 1px solid var(--sand-7);
+}
+
+.inspector__component summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Bench */
+
+.bench {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bench__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.bench__area {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  padding: var(--bench-padding);
+  background: var(--sand-4);
+  border: 1px solid var(--sand-8);
+  border-radius: 5px;
+}
+
+.bench__circuit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bench-gap);
+  flex: 0 0 auto;
+
+  /* Fill the Bench, then grow with circuit contents. */
+  width: max-content;
+  min-width: 100%;
+
+  /* Draw the wire behind the components. */
+  background: linear-gradient(var(--amber-9), var(--amber-9)) center / 100% 2px
+    no-repeat;
+}
+
+.circuit-component,
+.terminal {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--sand-8);
+  border-radius: 5px;
 }
 
-.circuit-simulation__button {
-  width: 200px;
-  margin: 20px;
+.circuit-component {
+  justify-content: flex-start;
+  gap: 4px;
+  width: var(--component-width);
+  height: var(--component-height);
+  padding-top: 20px;
+  font-size: 0.8rem;
+  background: var(--sand-1);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
-.circuit-simulation__output {
-  text-align: center;
+.terminal {
+  width: var(--terminal-size);
+  height: var(--terminal-size);
+  font-weight: 700;
+}
+
+.terminal--source {
+  background: var(--amber-5);
+  border-color: var(--amber-8);
+}
+
+.terminal--ground {
+  color: var(--sand-12);
+  background: var(--sand-6);
+  border-color: var(--sand-8);
+}
+
+/* Button */
+
+.button {
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  font-weight: 600;
+  color: white;
+  background: var(--cyan-9);
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--cyan-10);
+}
+
+.button:disabled {
+  opacity: 0.65;
+  cursor: wait;
 }

@@ -4,6 +4,6 @@ namespace CircuitBench.DTOs
 
     public record CircuitConfigurationDTO(
         PowerSourceSpecificationDTO PowerSource,
-        IReadOnlyList<ComponentSpecificationDTO> Components
+          IReadOnlyCollection<ComponentSpecificationDTO> Components
     );
 }

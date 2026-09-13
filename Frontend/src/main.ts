@@ -3,14 +3,20 @@ import { API_URL } from "./config"
 import type { CircuitConfigurationDTO } from "./dtos/circuit-configuration-dto"
 import type { CircuitSimulationResultDTO } from "./dtos/circuit-simulation-result-dto"
 
-const circuitSimulationButtonElement = document.querySelector<HTMLInputElement>(
-  "#circuit-simulation__button"
-)
+const simulateButton =
+  document.querySelector<HTMLButtonElement>("#simulate-button")
 
-const circuitSimulationOutputElement =
-  document.querySelector<HTMLOutputElement>("#circuit-simulation__output")
+const simulationStatus =
+  document.querySelector<HTMLElement>("#simulation-status")
+
+const simulationResult =
+  document.querySelector<HTMLElement>("#simulation-result")
 
 function main() {
+  if (!simulateButton || !simulationStatus || !simulationResult) {
+    return
+  }
+
   const circuitConfiguration: CircuitConfigurationDTO = {
     powerSource: { voltage: 9.0 },
     components: [
@@ -31,12 +37,20 @@ function main() {
       {
         kind: "resistor",
         resistance: 330.0
+      },
+      {
+        kind: "resistor",
+        resistance: 220.0
       }
     ]
   }
 
-  if (circuitSimulationButtonElement) {
-    circuitSimulationButtonElement.addEventListener("click", async () => {
+  simulateButton.addEventListener("click", async () => {
+    simulationStatus.textContent = "Simulating…"
+    simulationResult.hidden = true
+    simulateButton.disabled = true
+
+    try {
       const response = await fetch(`${API_URL}/api/circuit/simulate`, {
         method: "POST",
         headers: {
@@ -45,16 +59,54 @@ function main() {
         body: JSON.stringify(circuitConfiguration)
       })
 
+      if (!response.ok) {
+        throw new Error(`Simulation failed (${response.status})`)
+      }
+
       const circuitSimulationResult: CircuitSimulationResultDTO =
         await response.json()
 
-      if (circuitSimulationOutputElement) {
-        circuitSimulationOutputElement.value = JSON.stringify(
-          circuitSimulationResult
-        )
-      }
-    })
-  }
+      document.querySelector("#result-resistance")!.textContent =
+        circuitSimulationResult.totalResistorResistance.toFixed(2)
+
+      document.querySelector("#result-voltage")!.textContent =
+        circuitSimulationResult.voltage.toFixed(2)
+
+      document.querySelector("#result-current")!.textContent =
+        circuitSimulationResult.current === null
+          ? "—"
+          : (circuitSimulationResult.current * 1000).toFixed(2)
+
+      document.querySelector("#result-power")!.textContent =
+        circuitSimulationResult.power === null
+          ? "—"
+          : (circuitSimulationResult.power * 1000).toFixed(2)
+
+      // Result sections are currently hardcoded in index.html.
+      circuitSimulationResult.components.forEach((component, index) => {
+        document.querySelector(`#result-${index + 1}-voltage`)!.textContent =
+          component.voltageDrop === null
+            ? "—"
+            : component.voltageDrop.toFixed(2)
+
+        document.querySelector(`#result-${index + 1}-current`)!.textContent =
+          component.current === null
+            ? "—"
+            : (component.current * 1000).toFixed(2)
+
+        document.querySelector(`#result-${index + 1}-power`)!.textContent =
+          component.power === null ? "—" : (component.power * 1000).toFixed(2)
+      })
+
+      simulationResult.hidden = false
+      simulationStatus.textContent = "Simulation complete."
+    } catch {
+      simulationStatus.textContent =
+        "Simulation failed. Check the server and try again."
+    } finally {
+      simulateButton.disabled = false
+    }
+  })
 }
 
 main()
