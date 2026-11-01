@@ -35,18 +35,12 @@
 
               <dl class="inspector__values">
                 <dt>Source voltage</dt>
-                <dd>9 V</dd>
+                <dd id="source-voltage"></dd>
                 <dt>Components</dt>
-                <dd>5</dd>
+                <dd id="component-count"></dd>
               </dl>
 
-              <ol class="inspector__components">
-                <li>LED (1.8 V, max. 20 mA)</li>
-                <li>Resistor (180 Ω)</li>
-                <li>LED (2.2 V, max. 20 mA)</li>
-                <li>Resistor (330 Ω)</li>
-                <li>Resistor (220 Ω)</li>
-              </ol>
+              <ol id="inspector-components" class="inspector__components"></ol>
             </section>
 
             <section
@@ -61,78 +55,7 @@
                 Click Simulate to see the results.
               </p>
 
-              <div id="simulation-result" hidden>
-                <dl class="inspector__values">
-                  <dt>Total resistance</dt>
-                  <dd><span id="result-resistance">—</span> Ω</dd>
-                  <dt>Voltage</dt>
-                  <dd><span id="result-voltage">—</span> V</dd>
-                  <dt>Current</dt>
-                  <dd><span id="result-current">—</span> mA</dd>
-                  <dt>Power</dt>
-                  <dd><span id="result-power">—</span> mW</dd>
-                </dl>
-
-                <details class="inspector__component">
-                  <summary>1. LED (1.8 V)</summary>
-                  <dl class="inspector__values">
-                    <dt>Voltage drop</dt>
-                    <dd><span id="result-1-voltage">—</span> V</dd>
-                    <dt>Current</dt>
-                    <dd><span id="result-1-current">—</span> mA</dd>
-                    <dt>Power</dt>
-                    <dd><span id="result-1-power">—</span> mW</dd>
-                  </dl>
-                </details>
-
-                <details class="inspector__component">
-                  <summary>2. Resistor (180 Ω)</summary>
-                  <dl class="inspector__values">
-                    <dt>Voltage drop</dt>
-                    <dd><span id="result-2-voltage">—</span> V</dd>
-                    <dt>Current</dt>
-                    <dd><span id="result-2-current">—</span> mA</dd>
-                    <dt>Power</dt>
-                    <dd><span id="result-2-power">—</span> mW</dd>
-                  </dl>
-                </details>
-
-                <details class="inspector__component">
-                  <summary>3. LED (2.2 V)</summary>
-                  <dl class="inspector__values">
-                    <dt>Voltage drop</dt>
-                    <dd><span id="result-3-voltage">—</span> V</dd>
-                    <dt>Current</dt>
-                    <dd><span id="result-3-current">—</span> mA</dd>
-                    <dt>Power</dt>
-                    <dd><span id="result-3-power">—</span> mW</dd>
-                  </dl>
-                </details>
-
-                <details class="inspector__component">
-                  <summary>4. Resistor (330 Ω)</summary>
-                  <dl class="inspector__values">
-                    <dt>Voltage drop</dt>
-                    <dd><span id="result-4-voltage">—</span> V</dd>
-                    <dt>Current</dt>
-                    <dd><span id="result-4-current">—</span> mA</dd>
-                    <dt>Power</dt>
-                    <dd><span id="result-4-power">—</span> mW</dd>
-                  </dl>
-                </details>
-
-                <details class="inspector__component">
-                  <summary>5. Resistor (220 Ω)</summary>
-                  <dl class="inspector__values">
-                    <dt>Voltage drop</dt>
-                    <dd><span id="result-5-voltage">—</span> V</dd>
-                    <dt>Current</dt>
-                    <dd><span id="result-5-current">—</span> mA</dd>
-                    <dt>Power</dt>
-                    <dd><span id="result-5-power">—</span> mW</dd>
-                  </dl>
-                </details>
-              </div>
+              <div id="simulation-result" hidden></div>
             </section>
           </aside>
 
@@ -147,36 +70,13 @@
 
             <div class="bench__area">
               <div class="bench__circuit-row">
-                <div class="terminal terminal--source">9 V</div>
+                <div class="bench__circuit-row">
+                  <div class="terminal terminal--source">9 V</div>
 
-                <div class="circuit-component">
-                  <strong>LED</strong>
-                  <span>1.8 V</span>
-                  <small>Max. 20 mA</small>
+                  <div id="circuit-components" class="bench__components"></div>
+
+                  <div class="terminal terminal--ground">GND</div>
                 </div>
-
-                <div class="circuit-component">
-                  <strong>Resistor</strong>
-                  <span>180 Ω</span>
-                </div>
-
-                <div class="circuit-component">
-                  <strong>LED</strong>
-                  <span>2.2 V</span>
-                  <small>Max. 20 mA</small>
-                </div>
-
-                <div class="circuit-component">
-                  <strong>Resistor</strong>
-                  <span>330 Ω</span>
-                </div>
-
-                <div class="circuit-component">
-                  <strong>Resistor</strong>
-                  <span>220 Ω</span>
-                </div>
-
-                <div class="terminal terminal--ground">GND</div>
               </div>
             </div>
           </section>

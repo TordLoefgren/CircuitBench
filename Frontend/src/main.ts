@@ -3,6 +3,10 @@ import { API_URL } from "./config"
 import type { CircuitConfigurationDTO } from "./dtos/circuit-configuration-dto"
 import type { CircuitSimulationResultDTO } from "./dtos/circuit-simulation-result-dto"
 
+import { addComponent } from "./core/circuit"
+import { renderCircuit, renderCircuitInformation } from "./ui/render-circuit"
+import { renderSimulationResults } from "./ui/render-simulation-result"
+
 const simulateButton =
   document.querySelector<HTMLButtonElement>("#simulate-button")
 
@@ -12,38 +16,65 @@ const simulationStatus =
 const simulationResult =
   document.querySelector<HTMLElement>("#simulation-result")
 
+const circuitComponents = document.querySelector<HTMLElement>(
+  "#circuit-components"
+)
+
+const inspectorComponents = document.querySelector<HTMLOListElement>(
+  "#inspector-components"
+)
+
+const sourceVoltage = document.querySelector<HTMLElement>("#source-voltage")
+const componentCount = document.querySelector<HTMLElement>("#component-count")
+
 function main() {
-  if (!simulateButton || !simulationStatus || !simulationResult) {
+  if (
+    !simulateButton ||
+    !simulationStatus ||
+    !simulationResult ||
+    !circuitComponents ||
+    !inspectorComponents ||
+    !sourceVoltage ||
+    !componentCount
+  ) {
     return
   }
 
-  const circuitConfiguration: CircuitConfigurationDTO = {
+  let circuitConfiguration: CircuitConfigurationDTO = {
     powerSource: { voltage: 9.0 },
-    components: [
-      {
-        kind: "led",
-        forwardVoltage: 1.8,
-        maxCurrent: 0.02
-      },
-      {
-        kind: "resistor",
-        resistance: 180.0
-      },
-      {
-        kind: "led",
-        forwardVoltage: 2.2,
-        maxCurrent: 0.02
-      },
-      {
-        kind: "resistor",
-        resistance: 330.0
-      },
-      {
-        kind: "resistor",
-        resistance: 220.0
-      }
-    ]
+    components: []
   }
+
+  circuitConfiguration = addComponent(circuitConfiguration, {
+    kind: "led",
+    forwardVoltage: 1.8,
+    maxCurrent: 0.02
+  })
+  circuitConfiguration = addComponent(circuitConfiguration, {
+    kind: "resistor",
+    resistance: 180.0
+  })
+  circuitConfiguration = addComponent(circuitConfiguration, {
+    kind: "led",
+    forwardVoltage: 2.2,
+    maxCurrent: 0.02
+  })
+  circuitConfiguration = addComponent(circuitConfiguration, {
+    kind: "resistor",
+    resistance: 330.0
+  })
+  circuitConfiguration = addComponent(circuitConfiguration, {
+    kind: "resistor",
+    resistance: 220.0
+  })
+
+  renderCircuit(circuitConfiguration, circuitComponents)
+  renderCircuitInformation(
+    circuitConfiguration,
+    sourceVoltage,
+    componentCount,
+    inspectorComponents
+  )
 
   simulateButton.addEventListener("click", async () => {
     simulationStatus.textContent = "Simulating…"
@@ -66,37 +97,7 @@ function main() {
       const circuitSimulationResult: CircuitSimulationResultDTO =
         await response.json()
 
-      document.querySelector("#result-resistance")!.textContent =
-        circuitSimulationResult.totalResistorResistance.toFixed(2)
-
-      document.querySelector("#result-voltage")!.textContent =
-        circuitSimulationResult.voltage.toFixed(2)
-
-      document.querySelector("#result-current")!.textContent =
-        circuitSimulationResult.current === null
-          ? "—"
-          : (circuitSimulationResult.current * 1000).toFixed(2)
-
-      document.querySelector("#result-power")!.textContent =
-        circuitSimulationResult.power === null
-          ? "—"
-          : (circuitSimulationResult.power * 1000).toFixed(2)
-
-      // Result sections are currently hardcoded in index.html.
-      circuitSimulationResult.components.forEach((component, index) => {
-        document.querySelector(`#result-${index + 1}-voltage`)!.textContent =
-          component.voltageDrop === null
-            ? "—"
-            : component.voltageDrop.toFixed(2)
-
-        document.querySelector(`#result-${index + 1}-current`)!.textContent =
-          component.current === null
-            ? "—"
-            : (component.current * 1000).toFixed(2)
-
-        document.querySelector(`#result-${index + 1}-power`)!.textContent =
-          component.power === null ? "—" : (component.power * 1000).toFixed(2)
-      })
+      renderSimulationResults(circuitSimulationResult, simulationResult)
 
       simulationResult.hidden = false
       simulationStatus.textContent = "Simulation complete."
