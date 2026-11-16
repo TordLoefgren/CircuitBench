@@ -3,6 +3,7 @@ import {
   formatCurrent,
   formatPower,
   formatResistance,
+  formatSubscriptNumber,
   formatVoltage
 } from "./format"
 
@@ -26,7 +27,7 @@ describe("formatCurrent", () => {
 
 describe("formatResistance", () => {
   it.each([
-    [180, "180 Ω"],
+    [100, "100 Ω"],
     [-330, "-330 Ω"],
     [1_000, "1 kΩ"],
     [-1_500, "-1.5 kΩ"],
@@ -72,5 +73,14 @@ describe("formatPower", () => {
 
   it("rounds milliwatts to two decimal places", () => {
     expect(formatPower(0.001234)).toBe("1.23 mW")
+  })
+})
+
+describe("formatSubscriptNumber", () => {
+  it.each([
+    [1, "₁"],
+    [10, "₁₀"]
+  ])("formats %s as %s", (number, expected) => {
+    expect(formatSubscriptNumber(number)).toBe(expected)
   })
 })

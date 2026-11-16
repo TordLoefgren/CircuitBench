@@ -71,3 +71,8 @@ export function formatPower(watts: number): string {
 
   return `${Number(value.toFixed(2))} ${unit}`
 }
+
+export function formatSubscriptNumber(number: number): string {
+  const digits = "₀₁₂₃₄₅₆₇₈₉"
+  return String(number).replace(/\d/g, (digit) => digits.charAt(Number(digit)))
+}

@@ -22,36 +22,37 @@
           <aside class="panel inspector">
             <h2 class="panel__title inspector__title">Inspector</h2>
 
-            <section
-              class="inspector__section"
-              aria-labelledby="circuit-information-title"
-            >
-              <h3
-                id="circuit-information-title"
-                class="inspector__section-title"
-              >
-                Circuit information
-              </h3>
+            <section id="circuit-information" class="inspector__section">
+              <h3 class="inspector__section-title">Circuit information</h3>
 
+              <div id="source-voltage"></div>
               <dl class="inspector__values">
-                <dt>Source voltage</dt>
-                <dd id="source-voltage"></dd>
                 <dt>Components</dt>
                 <dd id="component-count"></dd>
               </dl>
 
-              <ol id="inspector-components" class="inspector__components"></ol>
+              <ul id="inspector-components" class="inspector__components"></ul>
+              <div class="inspector__component-actions">
+                <button class="button" id="add-resistor-button" type="button">
+                  Add Resistor
+                </button>
+                <button class="button" id="add-led-button" type="button">
+                  Add LED
+                </button>
+                <button
+                  class="button button--secondary inspector__clear-button"
+                  id="clear-components-button"
+                  type="button"
+                >
+                  Clear components
+                </button>
+              </div>
             </section>
 
-            <section
-              class="inspector__section"
-              aria-labelledby="simulation-result-title"
-            >
-              <h3 id="simulation-result-title" class="inspector__section-title">
-                Simulation result
-              </h3>
+            <section class="inspector__section">
+              <h3 class="inspector__section-title">Simulation result</h3>
 
-              <p id="simulation-status" class="inspector__status" role="status">
+              <p id="simulation-status" class="inspector__status">
                 Click Simulate to see the results.
               </p>
 
@@ -71,7 +72,10 @@
             <div class="bench__area">
               <div class="bench__circuit-row">
                 <div class="bench__circuit-row">
-                  <div class="terminal terminal--source">9 V</div>
+                  <div
+                    id="source-terminal"
+                    class="terminal terminal--source"
+                  ></div>
 
                   <div id="circuit-components" class="bench__components"></div>
 

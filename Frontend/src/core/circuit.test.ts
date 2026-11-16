@@ -1,16 +1,22 @@
 import { describe, expect, it } from "vitest"
 import type { CircuitConfigurationDTO } from "../dtos/circuit-configuration-dto"
-import { addComponent, removeComponent, updateComponent } from "./circuit"
+import {
+  addComponent,
+  clearComponents,
+  removeComponent,
+  setSourceVoltage,
+  updateComponent
+} from "./circuit"
 
 const led = { kind: "led", forwardVoltage: 1.8, maxCurrent: 0.02 } as const
-const resistor180 = { kind: "resistor", resistance: 180 } as const
+const resistor100 = { kind: "resistor", resistance: 100 } as const
 const resistor220 = { kind: "resistor", resistance: 220 } as const
 const resistor330 = { kind: "resistor", resistance: 330 } as const
 
 function configuration(): CircuitConfigurationDTO {
   return {
     powerSource: { voltage: 9 },
-    components: [led, resistor180, resistor330]
+    components: [led, resistor100, resistor330]
   }
 }
 
@@ -22,13 +28,41 @@ describe("addComponent", () => {
 
     expect(next.components).toEqual([
       led,
-      resistor180,
+      resistor100,
       resistor330,
       resistor220
     ])
     expect(next.components).not.toBe(previous.components)
-    expect(previous.components).toEqual([led, resistor180, resistor330])
+    expect(previous.components).toEqual([led, resistor100, resistor330])
     expect(next.powerSource).toBe(previous.powerSource)
+  })
+})
+
+describe("clearComponents", () => {
+  it("clears components without changing the source or previous configuration", () => {
+    const previous = configuration()
+
+    const next = clearComponents(previous)
+
+    expect(next.components).toEqual([])
+    expect(next.powerSource).toBe(previous.powerSource)
+    expect(previous.components).toEqual([led, resistor100, resistor330])
+  })
+})
+
+describe("setSourceVoltage", () => {
+  it("updates the source without changing the previous configuration", () => {
+    const previous = configuration()
+
+    const next = setSourceVoltage(previous, 12)
+
+    expect(next.powerSource.voltage).toBe(12)
+    expect(next.components).toBe(previous.components)
+    expect(previous.powerSource.voltage).toBe(9)
+  })
+
+  it.each([0, -1, NaN, Infinity])("rejects invalid voltage %s", (voltage) => {
+    expect(() => setSourceVoltage(configuration(), voltage)).toThrow(RangeError)
   })
 })
 
@@ -40,16 +74,16 @@ describe("updateComponent", () => {
 
     expect(next.components).toEqual([led, resistor220, resistor330])
     expect(next.components).not.toBe(previous.components)
-    expect(previous.components).toEqual([led, resistor180, resistor330])
+    expect(previous.components).toEqual([led, resistor100, resistor330])
     expect(next.powerSource).toBe(previous.powerSource)
   })
 })
 
 describe("removeComponent", () => {
   it.each([
-    [0, [resistor180, resistor330]],
+    [0, [resistor100, resistor330]],
     [1, [led, resistor330]],
-    [2, [led, resistor180]]
+    [2, [led, resistor100]]
   ])(
     "removes component at index %i and preserves the others",
     (index, expected) => {
@@ -59,20 +93,20 @@ describe("removeComponent", () => {
 
       expect(next.components).toEqual(expected)
       expect(next.components).not.toBe(previous.components)
-      expect(previous.components).toEqual([led, resistor180, resistor330])
+      expect(previous.components).toEqual([led, resistor100, resistor330])
     }
   )
 
   it("removes the only component", () => {
     const previous: CircuitConfigurationDTO = {
       powerSource: { voltage: 9 },
-      components: [resistor180]
+      components: [resistor100]
     }
 
     const next = removeComponent(previous, 0)
 
     expect(next.components).toEqual([])
-    expect(previous.components).toEqual([resistor180])
+    expect(previous.components).toEqual([resistor100])
   })
 })
 
@@ -86,7 +120,7 @@ describe("component indices", () => {
         RangeError
       )
       expect(() => removeComponent(previous, index)).toThrow(RangeError)
-      expect(previous.components).toEqual([led, resistor180, resistor330])
+      expect(previous.components).toEqual([led, resistor100, resistor330])
     }
   )
 })

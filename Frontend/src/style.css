@@ -1,24 +1,47 @@
 @import "@radix-ui/colors/sand.css";
 @import "@radix-ui/colors/cyan.css";
 @import "@radix-ui/colors/amber.css";
+@import "@radix-ui/colors/red.css";
+@import "@radix-ui/colors/black-alpha.css";
+
+/* =============== Reset =============== */
 
 * {
   box-sizing: border-box;
   margin: 0;
 }
 
+/* =============== Core =============== */
+
 :root {
+  --text: var(--sand-12);
+  --text-muted: var(--sand-11);
+  --surface-shell: var(--sand-5);
+  --surface-app: var(--sand-2);
+  --surface-workspace: var(--sand-3);
+  --surface-bench: var(--sand-4);
+  --surface-panel: var(--sand-1);
+  --border: var(--sand-8);
+  --separator: var(--sand-7);
+  --accent: var(--cyan-9);
+  --accent-hover: var(--cyan-10);
+  --error: var(--red-11);
+  --shadow: var(--black-a2);
+  --wire: var(--amber-9);
+
   --page-padding: 40px;
   --shell-width: 1200px;
   --header-height: 96px;
   --footer-height: 56px;
 
-  --workspace-padding: 20px;
-  --workspace-gap: 20px;
+  --space-xsmall: 4px;
+  --space-small: 8px;
+  --space-medium: 20px;
+  --space-large: 30px;
+
   --inspector-width: 300px;
   --bench-min-width: 500px;
 
-  --bench-padding: 30px;
   --bench-gap: 16px;
   --component-width: 100px;
   --component-height: 120px;
@@ -27,30 +50,32 @@
   font:
     18px/1.45 system-ui,
     sans-serif;
-  color: var(--sand-12);
+  color: var(--text);
 }
+
+/* =============== Page =============== */
 
 body {
   min-height: 100dvh;
   padding: var(--page-padding);
 
-  background-color: var(--sand-5);
-  background-image: radial-gradient(circle, var(--sand-8) 1px, transparent 1px);
+  background-color: var(--surface-shell);
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
-/* Page layout */
+/* =============== App Shell =============== */
 
 .app-shell {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-small);
   width: min(var(--shell-width), 100%);
-  min-height: calc(100dvh - 2 * var(--page-padding));
+  height: calc(100dvh - 2 * var(--page-padding));
   margin-inline: auto;
-  padding: 8px;
-  background: var(--sand-5);
-  border: 1px solid var(--sand-8);
+  padding: var(--space-small);
+  background: var(--surface-shell);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
@@ -58,85 +83,90 @@ body {
   display: flex;
   align-items: center;
   flex: 0 0 var(--header-height);
-  padding: 20px 30px;
-  background: var(--sand-2);
+  padding: var(--space-medium) var(--space-large);
+  background: var(--surface-app);
 }
 
 .app-header__heading {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xsmall);
 }
 
 .app-shell__main {
   display: flex;
   flex: 1;
+  min-height: 0;
   overflow-x: auto;
-  background: var(--sand-3);
+  background: var(--surface-workspace);
 }
 
 .workspace {
   display: grid;
   grid-template-columns: var(--inspector-width) minmax(0, 1fr);
-  gap: var(--workspace-gap);
+  grid-template-rows: minmax(0, 1fr);
+  gap: var(--space-medium);
   width: 100%;
 
   /* Scroll below the minimum usable workspace width. */
   min-width: calc(
-    var(--inspector-width) + var(--bench-min-width) + var(--workspace-gap) + 2 *
-      var(--workspace-padding)
+    var(--inspector-width) + var(--bench-min-width) + 3 * var(--space-medium)
   );
 
-  padding: var(--workspace-padding);
+  padding: var(--space-medium);
 }
 
 .app-shell__footer {
   display: flex;
   align-items: center;
   flex: 0 0 var(--footer-height);
-  padding-inline: 30px;
-  background: var(--sand-2);
+  padding-inline: var(--space-large);
+  background: var(--surface-app);
 }
 
 .panel {
-  padding: 20px;
-  background: var(--sand-1);
-  border: 1px solid var(--sand-7);
+  padding: var(--space-medium);
+  background: var(--surface-panel);
+  border: 1px solid var(--separator);
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
+  box-shadow: 0 2px 6px var(--shadow);
 }
 
 .panel__title {
   font-size: 1rem;
 }
 
-/* Inspector */
+/* =============== Inspector =============== */
+
+.inspector {
+  overflow-y: auto;
+}
 
 .inspector__title {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-medium);
 }
 
 .inspector__section {
-  padding-block: 20px;
-  border-top: 1px solid var(--sand-7);
+  padding-block: var(--space-medium);
+  border-top: 1px solid var(--separator);
   font-size: 0.8rem;
 }
 
 .inspector__section-title {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-small);
   font-size: 0.85rem;
 }
 
 .inspector__values {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 4px 8px;
-  margin-block: 8px;
+  gap: var(--space-xsmall) var(--space-small);
+  margin-block: var(--space-small);
 }
 
 .inspector__values dt,
 .inspector__status {
-  color: var(--sand-11);
+  color: var(--text-muted);
 }
 
 .inspector__values dd {
@@ -145,20 +175,56 @@ body {
 }
 
 .inspector__components {
-  padding-left: 20px;
+  padding-left: 0;
+  list-style: none;
 }
 
-.inspector__component {
-  padding-block: 6px;
-  border-top: 1px solid var(--sand-7);
+.inspector__component-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-small);
+  margin-top: 12px;
 }
 
+.inspector__clear-button {
+  grid-column: 1 / -1;
+}
+
+.inspector__item summary,
 .inspector__component summary {
   cursor: pointer;
   font-weight: 600;
 }
 
-/* Bench */
+.inspector__form {
+  display: grid;
+  gap: var(--space-small);
+  margin-block: var(--space-small) 12px;
+}
+
+.inspector__form input {
+  padding: 0.4rem;
+  font: inherit;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+
+.inspector__form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-small);
+}
+
+.inspector__form-error {
+  color: var(--error);
+}
+
+.inspector__component {
+  padding-block: 6px;
+  border-top: 1px solid var(--separator);
+}
+
+/* =============== Workbench =============== */
 
 .bench {
   display: flex;
@@ -170,8 +236,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: var(--space-medium);
+  margin-bottom: var(--space-medium);
 }
 
 .bench__area {
@@ -180,9 +246,9 @@ body {
   flex: 1;
   min-width: 0;
   overflow-x: auto;
-  padding: var(--bench-padding);
-  background: var(--sand-4);
-  border: 1px solid var(--sand-8);
+  padding: var(--space-large);
+  background: var(--surface-bench);
+  border: 1px solid var(--border);
   border-radius: 5px;
 }
 
@@ -198,7 +264,7 @@ body {
   min-width: 100%;
 
   /* Draw the wire behind the components. */
-  background: linear-gradient(var(--amber-9), var(--amber-9)) center / 100% 2px
+  background: linear-gradient(var(--wire), var(--wire)) center / 100% 2px
     no-repeat;
 }
 
@@ -215,19 +281,19 @@ body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid var(--sand-8);
+  border: 1px solid var(--border);
   border-radius: 5px;
 }
 
 .circuit-component {
   justify-content: flex-start;
-  gap: 4px;
+  gap: var(--space-xsmall);
   width: var(--component-width);
   height: var(--component-height);
-  padding-top: 20px;
+  padding-top: var(--space-medium);
   font-size: 0.8rem;
-  background: var(--sand-1);
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  background: var(--surface-panel);
+  box-shadow: 0 2px 4px var(--shadow);
 }
 
 .terminal {
@@ -242,29 +308,39 @@ body {
 }
 
 .terminal--ground {
-  color: var(--sand-12);
+  color: var(--text);
   background: var(--sand-6);
-  border-color: var(--sand-8);
+  border-color: var(--border);
 }
 
-/* Button */
+/* =============== Buttons =============== */
 
 .button {
   padding: 0.45rem 0.9rem;
   font: inherit;
   font-weight: 600;
-  color: white;
-  background: var(--cyan-9);
+  color: var(--surface-panel);
+  background: var(--accent);
   border: 0;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .button:hover {
-  background: var(--cyan-10);
+  background: var(--accent-hover);
+}
+
+.button--secondary {
+  color: var(--text);
+  background: var(--surface-shell);
+  border: 1px solid var(--border);
+}
+
+.button--secondary:hover {
+  background: var(--sand-6);
 }
 
 .button:disabled {
   opacity: 0.65;
-  cursor: wait;
+  cursor: not-allowed;
 }

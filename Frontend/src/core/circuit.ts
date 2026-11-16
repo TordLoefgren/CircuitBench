@@ -24,6 +24,29 @@ export function addComponent(
   }
 }
 
+export function clearComponents(
+  circuitConfiguration: CircuitConfigurationDTO
+): CircuitConfigurationDTO {
+  return {
+    ...circuitConfiguration,
+    components: []
+  }
+}
+
+export function setSourceVoltage(
+  circuitConfiguration: CircuitConfigurationDTO,
+  voltage: number
+): CircuitConfigurationDTO {
+  if (!Number.isFinite(voltage) || voltage <= 0) {
+    throw new RangeError("Source voltage must be positive and finite")
+  }
+
+  return {
+    ...circuitConfiguration,
+    powerSource: { ...circuitConfiguration.powerSource, voltage }
+  }
+}
+
 export function updateComponent(
   circuitConfiguration: CircuitConfigurationDTO,
   componentSpecification: ComponentSpecificationDTO,

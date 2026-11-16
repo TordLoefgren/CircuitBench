@@ -8,7 +8,7 @@ import type {
 import {
   getCircuitResultView,
   getComponentResultView,
-  getComponentSpecificationLabel,
+  getComponentLabels,
   getLedView,
   getResistorView
 } from "./component-views"
@@ -17,11 +17,11 @@ describe("getResistorView", () => {
   it("labels a resistor specification", () => {
     const resistor: ResistorComponentSpecificationDTO = {
       kind: "resistor",
-      resistance: 180
+      resistance: 100
     }
 
     expect(getResistorView(resistor)).toEqual({
-      resistanceLabel: "180 Ω"
+      resistanceLabel: "100 Ω"
     })
   })
 })
@@ -41,21 +41,26 @@ describe("getLedView", () => {
   })
 })
 
-describe("getComponentSpecificationLabel", () => {
-  it("labels an LED for the Inspector", () => {
-    expect(
-      getComponentSpecificationLabel({
-        kind: "led",
-        forwardVoltage: 1.8,
-        maxCurrent: 0.02
-      })
-    ).toBe("LED (1.8 V, max. 20 mA)")
+describe("getComponentLabels", () => {
+  it("numbers LEDs and resistors separately in circuit order", () => {
+    const components = [
+      { kind: "led", forwardVoltage: 1.8, maxCurrent: 0.02 },
+      { kind: "resistor", resistance: 100 },
+      { kind: "led", forwardVoltage: 2.2, maxCurrent: 0.02 },
+      { kind: "resistor", resistance: 330 }
+    ] as const
+
+    expect(getComponentLabels(components)).toEqual(["L₁", "R₁", "L₂", "R₂"])
+    expect(getComponentLabels(components.slice(1))).toEqual(["R₁", "L₁", "R₂"])
   })
 
-  it("labels a resistor for the Inspector", () => {
-    expect(
-      getComponentSpecificationLabel({ kind: "resistor", resistance: 220 })
-    ).toBe("Resistor (220 Ω)")
+  it("uses subscripts for multi-digit component numbers", () => {
+    const resistors = Array.from({ length: 10 }, () => ({
+      kind: "resistor" as const,
+      resistance: 100
+    }))
+
+    expect(getComponentLabels(resistors).at(-1)).toBe("R₁₀")
   })
 })
 
@@ -96,7 +101,7 @@ describe("getCircuitResultView", () => {
 
   it("formats zero current and power instead of treating them as unavailable", () => {
     const result: CircuitSimulationResultDTO = {
-      totalResistorResistance: 180,
+      totalResistorResistance: 100,
       voltage: 0,
       current: 0,
       power: 0,
@@ -104,7 +109,7 @@ describe("getCircuitResultView", () => {
     }
 
     expect(getCircuitResultView(result)).toEqual({
-      totalResistorResistanceLabel: "180 Ω",
+      totalResistorResistanceLabel: "100 Ω",
       voltageLabel: "0 mV",
       currentLabel: "0 µA",
       powerLabel: "0 mW"
@@ -121,8 +126,8 @@ describe("getComponentResultView", () => {
       power: 0.01233
     }
 
-    expect(getComponentResultView(result)).toEqual({
-      componentTitleLabel: "LED",
+    expect(getComponentResultView(result, "L₁")).toEqual({
+      componentTitleLabel: "LED L₁",
       voltageDropLabel: "1.8 V",
       currentLabel: "6.85 mA",
       powerLabel: "12.33 mW"
@@ -132,14 +137,14 @@ describe("getComponentResultView", () => {
   it("labels a resistor simulation result", () => {
     const result: ComponentSimulationResultDTO = {
       kind: "resistor",
-      resistance: 180,
+      resistance: 100,
       voltageDrop: 1.2,
       current: 0.00685,
       power: 0.00822
     }
 
-    expect(getComponentResultView(result)).toEqual({
-      componentTitleLabel: "Resistor",
+    expect(getComponentResultView(result, "R₂")).toEqual({
+      componentTitleLabel: "Resistor R₂",
       voltageDropLabel: "1.2 V",
       currentLabel: "6.85 mA",
       powerLabel: "8.22 mW"
@@ -154,8 +159,8 @@ describe("getComponentResultView", () => {
       power: null
     }
 
-    expect(getComponentResultView(result)).toEqual({
-      componentTitleLabel: "LED",
+    expect(getComponentResultView(result, "L₂")).toEqual({
+      componentTitleLabel: "LED L₂",
       voltageDropLabel: "-",
       currentLabel: "-",
       powerLabel: "-"
@@ -171,8 +176,8 @@ describe("getComponentResultView", () => {
       power: 0
     }
 
-    expect(getComponentResultView(result)).toEqual({
-      componentTitleLabel: "Resistor",
+    expect(getComponentResultView(result, "R₁")).toEqual({
+      componentTitleLabel: "Resistor R₁",
       voltageDropLabel: "0 mV",
       currentLabel: "0 µA",
       powerLabel: "0 mW"

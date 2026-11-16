@@ -2,6 +2,7 @@ import {
   formatCurrent,
   formatPower,
   formatResistance,
+  formatSubscriptNumber,
   formatVoltage
 } from "../core/format"
 import type { CircuitSimulationResultDTO } from "../dtos/circuit-simulation-result-dto"
@@ -50,15 +51,17 @@ export function getLedView(led: LEDComponentSpecificationDTO): LedView {
   }
 }
 
-export function getComponentSpecificationLabel(
-  component: ComponentSpecificationDTO
-): string {
-  switch (component.kind) {
-    case "led":
-      return `LED (${formatVoltage(component.forwardVoltage)}, max. ${formatCurrent(component.maxCurrent)})`
-    case "resistor":
-      return `Resistor (${formatResistance(component.resistance)})`
-  }
+export function getComponentLabels(
+  components: readonly { kind: ComponentSpecificationDTO["kind"] }[]
+): string[] {
+  let resistorCount = 0
+  let ledCount = 0
+
+  return components.map((component) =>
+    component.kind === "resistor"
+      ? `R${formatSubscriptNumber(++resistorCount)}`
+      : `L${formatSubscriptNumber(++ledCount)}`
+  )
 }
 
 export function getCircuitResultView(
@@ -79,10 +82,14 @@ export function getCircuitResultView(
 }
 
 export function getComponentResultView(
-  componentResult: ComponentSimulationResultDTO
+  componentResult: ComponentSimulationResultDTO,
+  componentLabel: string
 ): ComponentResultView {
   return {
-    componentTitleLabel: componentResult.kind === "led" ? "LED" : "Resistor",
+    componentTitleLabel:
+      componentResult.kind === "led"
+        ? `LED ${componentLabel}`
+        : `Resistor ${componentLabel}`,
     voltageDropLabel:
       componentResult.voltageDrop === null
         ? "-"

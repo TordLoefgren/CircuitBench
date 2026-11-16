@@ -1,43 +1,69 @@
 import type { CircuitConfigurationDTO } from "../dtos/circuit-configuration-dto"
 import { formatVoltage } from "../core/format"
 import {
-  getComponentSpecificationLabel,
+  getComponentLabels,
   getLedView,
   getResistorView
 } from "./component-views"
-import { createLedElement, createResistorElement } from "./component-elements"
+import {
+  createLedElement,
+  createLedInspectorElement,
+  createResistorInspectorElement,
+  createResistorElement,
+  createSourceVoltageInspectorElement
+} from "./component-elements"
+import type { InspectorElements, WorkbenchElements } from "./elements"
 
-export function renderCircuit(
+export function renderWorkbenchCircuit(
   configuration: CircuitConfigurationDTO,
-  container: HTMLElement
+  elements: WorkbenchElements
 ): void {
-  const elements = configuration.components.map((component) => {
+  const labels = getComponentLabels(configuration.components)
+  const componentElements = configuration.components.map((component, index) => {
     switch (component.kind) {
       case "led":
-        return createLedElement(getLedView(component))
+        return createLedElement(labels[index], getLedView(component))
 
       case "resistor":
-        return createResistorElement(getResistorView(component))
+        return createResistorElement(labels[index], getResistorView(component))
     }
   })
 
-  container.replaceChildren(...elements)
+  elements.componentList.replaceChildren(...componentElements)
+  elements.sourceTerminal.textContent = formatVoltage(
+    configuration.powerSource.voltage
+  )
 }
 
-export function renderCircuitInformation(
+export function renderInspectorCircuit(
   configuration: CircuitConfigurationDTO,
-  sourceVoltage: HTMLElement,
-  componentCount: HTMLElement,
-  componentList: HTMLOListElement
+  elements: InspectorElements
 ): void {
-  sourceVoltage.textContent = formatVoltage(configuration.powerSource.voltage)
-  componentCount.textContent = String(configuration.components.length)
+  elements.sourceVoltage.replaceChildren(
+    createSourceVoltageInspectorElement(configuration.powerSource.voltage)
+  )
+  elements.componentCount.textContent = String(configuration.components.length)
+  elements.clearComponentsButton.disabled =
+    configuration.components.length === 0
 
-  const items = configuration.components.map((component) => {
+  const labels = getComponentLabels(configuration.components)
+  const items = configuration.components.map((component, index) => {
     const item = document.createElement("li")
-    item.textContent = getComponentSpecificationLabel(component)
+
+    if (component.kind === "resistor") {
+      item.append(
+        createResistorInspectorElement(
+          labels[index],
+          component.resistance,
+          index
+        )
+      )
+    } else {
+      item.append(createLedInspectorElement(labels[index], component, index))
+    }
+
     return item
   })
 
-  componentList.replaceChildren(...items)
+  elements.componentList.replaceChildren(...items)
 }
